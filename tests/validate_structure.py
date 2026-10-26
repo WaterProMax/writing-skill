@@ -83,7 +83,8 @@ def main() -> None:
     if re.search(r"\bv0\.\d+\b", skill_text, flags=re.IGNORECASE):
         fail("version-history prose must live in CHANGELOG.md, not SKILL.md")
 
-    if len(skill_text) > 15_000:
+    # 1.0.3 adds a Scoped route and shared red-line pointers on the always-loaded router.
+    if len(skill_text) > 20_000:
         fail(f"SKILL.md is too large for a unified router: {len(skill_text)} characters")
 
     missing_modes = sorted(m for m in REQUIRED_MODES if m not in skill_text)
@@ -112,7 +113,8 @@ def main() -> None:
         path.stat().st_size
         for path in [skill, REFS / "core-model.md", REFS / "audit-workflow.md"]
     )
-    if lite_writing_size > 30_000 or lite_audit_size > 30_000:
+    # Raised with the 1.0.3 Scoped route, which lives on the always-loaded router.
+    if lite_writing_size > 36_000 or lite_audit_size > 36_000:
         fail(
             "Lite route exceeded budget: "
             f"writing={lite_writing_size}, audit={lite_audit_size}"
@@ -160,8 +162,66 @@ def main() -> None:
     if "running code > Flyway/entities" not in skill_text:
         fail("SKILL.md must state the source conflict order")
 
+    if "**Scoped**" not in skill_text or "Do **not** enter Mode 1" not in skill_text:
+        fail("SKILL.md must show a Scoped route that refuses Mode 1")
+    if "would this mis-attribute A’s tech to B?" not in skill_text:
+        fail("SKILL.md Scoped route must limit adjacent code to mis-attribution checks")
+    if "promote this task to Deep" not in skill_text:
+        fail("SKILL.md must stop 比赛/申报 from promoting a Boundary memo to Deep")
+
+    verify_text = (REFS / "code-verification-workflow.md").read_text(encoding="utf-8")
+    shared_red_lines = [
+        "Mode 2/3 code-fact red lines",
+        "ListenAndServe",
+        "net/http",
+        "Empty Controller",
+        "JDBC",
+        "@TableField",
+        "loopback",
+        "public address",
+        "empty DSN",
+        "偏差 5",
+        "章节职责是 Boundary 时，本节约让路",
+        "偏差 4",
+    ]
+    missing_red = [s for s in shared_red_lines if s not in verify_text]
+    if missing_red:
+        fail(f"code-verification-workflow.md missing Mode 2/3 red lines: {missing_red}")
+    if "codebase-knowledge-base-workflow.md" not in verify_text:
+        fail("code-verification red lines must say Mode 2/3 need not open the Mode 1 workflow")
+
+    rules_text = (REFS / "decision-rules.md").read_text(encoding="utf-8")
+    memo_markers = [
+        "子系统局限性备忘录",
+        "One row per entrypoint",
+        "Do not merge dry-run defaults across entrypoints",
+        "可以写 / 不能写",
+        "Experiment scores default to Delete",
+        "Competition-style yield",
+        "loopback / public address / empty DSN",
+    ]
+    missing_memo = [s for s in memo_markers if s not in rules_text]
+    if missing_memo:
+        fail(f"decision-rules.md §9 memo markers missing: {missing_memo}")
+
+    writing_text = (REFS / "writing-workflow.md").read_text(encoding="utf-8")
+    if "Scoped" not in writing_text or "Do not enter Mode 1" not in writing_text:
+        fail("writing-workflow Phase 0 must route Scoped and refuse Mode 1")
+
+    cases_text = (ROOT / "tests" / "regression-cases.yaml").read_text(encoding="utf-8")
+    for signature in (
+        "scoped_cli_module_boundary",
+        "为单体仓库中的一个 CLI 模块写申报边界",
+        "producing `01`–`07`",
+        "writing the CLI as a listen service",
+        "turning adjacent experiment scores into that CLI’s product metrics",
+    ):
+        if signature not in cases_text:
+            fail(f"regression case missing signature: {signature}")
+
     print("PASS: unified writing-skill structure is valid")
     print("PASS: Mode 1 grounding anchors present")
+    print("PASS: Scoped route and Mode 2/3 code-fact red lines present")
 
     print(f"PASS: Lite writing load = {lite_writing_size} bytes")
     print(f"PASS: Lite audit load = {lite_audit_size} bytes")

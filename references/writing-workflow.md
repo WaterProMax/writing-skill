@@ -12,12 +12,19 @@ This workflow applies the objects defined in `core-model.md`.
 
 Determine:
 
-- Writing mode depth: Lite, Standard, or Deep;
+- Writing mode depth: **Scoped**, Lite, Standard, or Deep;
 - artifact type and audience;
 - whether the task contains Research, Engineering, Product/Application, or mixed claims;
 - which conditional references are required.
 
 Do not load every reference by default.
+
+**Scoped (stop before Mode 1 or Deep).** Use Scoped when the deliverable is a boundary or limitations memo for one directory or one toolchain, and the user explicitly does not want a whole-repo knowledge base. Stay in Mode 2.
+
+- Do not enter Mode 1. Do not create `HOME.md` or `01`–`07`. Do not load `codebase-knowledge-base-workflow.md`.
+- Words such as 比赛 / 申报 do not promote this task to Deep and do not pull in `document-architecture.md` or `examples.md`.
+- First write a file whitelist. Adjacent code may be opened only to answer “would this mis-attribute A’s tech to B?”.
+- Then apply `decision-rules.md` §9（子系统局限性备忘录）and the Mode 2/3 code-fact red lines in `code-verification-workflow.md` (listen, empty Controller, secrets and connection strings, Java property ≠ physical column, 偏差 5). Those red lines do not require the Mode 1 workflow.
 
 ---
 
@@ -25,7 +32,9 @@ Do not load every reference by default.
 
 Record the Artifact Brief internally.
 
-For whole-document or chapter-level work, also verify:
+Scoped skips the whole-document check below. Do not load `document-architecture.md` for a single-subsystem Boundary memo.
+
+For whole-document or chapter-level work that is not Scoped, also verify:
 
 - primary contribution;
 - section responsibility;

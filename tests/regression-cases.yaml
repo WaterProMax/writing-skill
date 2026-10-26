@@ -150,3 +150,16 @@ cases:
       severity: P1
       primary_treatment: Restructure
       required_action: Treat the 7+1 knowledge base strictly as an internal Investigator index; organize the formal document around primary contribution and reader reasoning, and filter ISSUE logs through the Claim Necessity Test
+
+  - id: scoped_cli_module_boundary
+    input: "为单体仓库中的一个 CLI 模块写申报边界"
+    expected:
+      depth: Scoped
+      mode: Mode 2
+      root_cause: Source gravity
+      primary_treatment: Narrow
+      failure_signatures:
+        - producing `01`–`07`
+        - writing the CLI as a listen service
+        - turning adjacent experiment scores into that CLI’s product metrics
+      required_action: Stay on Scoped and Mode 2. Do not enter Mode 1 or create `01`–`07`. Write a file whitelist first. Do not describe the CLI as a listen service without `ListenAndServe` or an equivalent bind. Delete adjacent experiment scores unless this section’s Claim Type is Research with a full protocol. Concentrate can-write / cannot-write in one Boundary section.

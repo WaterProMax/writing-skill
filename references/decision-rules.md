@@ -230,6 +230,20 @@ Decision:
 
 Do not conceal a boundary necessary for accuracy. Do not publish an internal defect merely because it is true.
 
+### 子系统局限性备忘录
+
+Use this subsection when the artifact is a boundary or limitations memo for one directory or one toolchain inside a larger repository. Depth is **Scoped** (`SKILL.md`). Do not enter Mode 1. Do not create `01`–`07`.
+
+1. **File whitelist first.** List the files that may support a sentence. Adjacent code may be opened only to answer “would this mis-attribute A’s tech to B?”. Do not grow a second product chapter from that read.
+2. **One row per entrypoint.** Each row states process shape (CLI, batch, or listen), default flags, write targets, and gates. A listen shape requires `ListenAndServe` or an equivalent bind (`code-verification-workflow.md`, 偏差 5).
+3. **Do not merge dry-run defaults across entrypoints.** If two commands default `-dry-run` differently, or one entrypoint bypasses dry-run, keep them on separate rows. A merged sentence such as “the tool defaults to dry-run” is a false Engineering claim.
+4. **One Boundary section.** Concentrate can-write / cannot-write in a single section a reader can find as 「可以写 / 不能写」. Entrypoint sections keep a narrow positive sentence and point here. Do not repeat the defect inventory in every section (§10).
+5. **Experiment scores default to Delete.** Keep a score only when this section’s Claim Type is **Research** and the Research contract is complete (task, reference truth, protocol, rationale, comparator, interpretation). A score from an adjacent experiment is not this module’s product metric.
+6. **Infrastructure defaults.** In formal prose, cite the source line number and the category (loopback / public address / empty DSN). Do not copy host, IP, secret, or JDBC URL into the body. The same rule covers passwords and connection strings. Java property names are not physical columns without `@TableField`. These code-fact red lines live in `code-verification-workflow.md` and do not require the Mode 1 workflow.
+7. **Search scope is not product failure.** “This search found no reader” states the observation scope. Do not write it as a product failure (see §11: auditor-access limitation versus project-level absence).
+
+**Competition-style yield.** When the chapter’s job is Boundary, do not use “name all three RAG layers / drop hedges such as 试图 or 尝试 / retitle as capability marketing” to widen claims. 偏差 4 and this subsection outrank `code-verification-workflow.md`（特殊处理：比赛文档）. That competition section applies only when the chapter’s job is a capability statement.
+
 ---
 
 ## 10. Boundary placement

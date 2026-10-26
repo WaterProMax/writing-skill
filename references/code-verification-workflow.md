@@ -5,6 +5,17 @@
 This workflow governs **Mode 3 (Code Verification & Fact-Checking)** and the **Code-Truth Gate** in **Mode 2 / Mode 4**.
 While `references/audit-workflow.md` audits macro-level argument structure, Claim-Evidence Contracts (`Research` vs `Engineering` vs `Product`), and Narrative Projection, this workflow performs **line-by-line source-code verification** of concrete technical assertions (table names, class/method names, state enums, sync/async behaviors, module attributions, and AI vs engineering boundaries) and produces **drop-in replacement prose**.
 
+Mode 2 and Mode 3 load **this file** for the code-fact red lines below. Do not enter Mode 1 or open `codebase-knowledge-base-workflow.md` just to reach them. Mode 1 still enforces the same facts in its own workflow.
+
+## Mode 2/3 code-fact red lines
+
+Apply these whenever formal prose states a code fact, including a Scoped limitations memo:
+
+- **Listen / bind.** Do not call a CLI, batch job, or client a long-lived HTTP service without `ListenAndServe` or an equivalent bind. A directory name, a `net/http` import, or an unreferenced URL in config is not a bind. See 偏差 5.
+- **Empty Controller.** A class with only a type-level `@RequestMapping` and **0** handler methods is not an API.
+- **Secrets and connection strings.** Do not copy passwords, tokens, connection strings, hosts, IPs, secrets, or full JDBC URLs into the body. Name the config key. When the sentence is about an infrastructure default, cite the **source line number** and the **category** only: loopback, public address, or empty DSN.
+- **Java property ≠ physical column.** Without `@TableField` or explicit DDL, do not invent a snake_case column. Say the physical column is not declared on the annotation.
+
 ---
 
 # 技术文档与代码一致性审查修订
@@ -30,7 +41,7 @@ While `references/audit-workflow.md` audits macro-level argument structure, Clai
 
 输出必须是"直接复制粘贴进文档"的成品文字。不写"你需要把XX改成YY"这种指示性语言，而是直接给修改后的整段。
 
-## 常见的四类偏差
+## 常见的五类偏差
 
 ### 偏差 1: 把 A 系统的技术特征错误归因到 B 系统
 
@@ -57,6 +68,17 @@ While `references/audit-workflow.md` audits macro-level argument structure, Clai
 **典型案例**: 把 AI 的"候选建议"说成"最终结果"。比如技能匹配中 AI 只负责从候选池中选择，但文档可能写成 AI 直接输出技能标签。
 
 **检查方法**: grep 对应 Service 中 AI 调用的上下游——AI 输出后是否有工程校验层（gate/validator/converter）再做最终决策。
+
+### 偏差 5: 把批处理 CLI 客户端写成常驻 HTTP 服务
+
+**典型案例**: 目录名叫 service，入口 import 了 `net/http`，配置里有一个没有任何引用点的端口或 URL，文档就把这条命令写成监听服务。启动函数里没有 `ListenAndServe`，也没有等价的端口绑定。
+
+**检查方法**:
+1. 打开该入口的 `main`（或等价启动函数），查找 `ListenAndServe` 或真正占用地址的绑定调用。
+2. 目录名、`net/http`（或同类 HTTP 库）的 import、一份未被引用的 URL/端口配置，都不是监听证据。
+3. 没有绑定，就写成 CLI / 批处理客户端，不要写成常驻 HTTP 服务。
+
+**证据要求**: 正文中的「监听 / 常驻服务 / 端口开放」必须对应到绑定调用的文件与行号。没有绑定，这句话不能出现。
 
 ## 执行流程
 
@@ -117,7 +139,7 @@ grep -r "embedding\|vector\|chroma" --include="*Service*.java"
 
 ## 特殊处理：比赛文档
 
-比赛文档需要额外注意：
+比赛文档在**章节职责是能力陈述**时需要额外注意：
 
 1. **显式标注技术关键词**：RAG 的三层（Retrieval/Augmented/Generation）要分别点出
 2. **避免过度谦逊**：如实写出技术实现，不添加"试图""尝试"等弱化词
@@ -125,15 +147,27 @@ grep -r "embedding\|vector\|chroma" --include="*Service*.java"
 4. **表名不加引号包围**：直接用 `table_name` 而非"table_name 表"
 5. **段落标题要体现技术深度**："AI 个性化简历生成"比"简历功能"更有说服力
 
+### 章节职责是 Boundary 时，本节约让路
+
+当这一章的工作是边界或局限性（包括子系统局限性备忘录），不要用第 1、2、5 条来加宽主张：
+
+- 不要为了点满 RAG 三层，把「没有查询入口」写成检索–增强–生成；
+- 不要为了去掉「试图 / 尝试」而删掉边界句里必要的范围限定；
+- 不要把标题改成能力宣传。
+
+**优先级（显式）**: 偏差 4（AI 能力边界被夸大）和 `references/decision-rules.md` §9（含「子系统局限性备忘录」）高于本节的比赛文风。比赛文风只在章节职责是能力陈述时使用。Boundary 章节保持「可以写 / 不能写」，不把局限改写成能力。
+
 ## 与知识库生成的配合
 
 如果项目已有知识库（如 `docs/knowledge-base/`），优先查知识库而非直接 grep 源码。知识库中已整理的 Entity 清单、Service 列表、API 路由矩阵可以加速 Step 2 的断言核验。
+
+Scoped 局限性备忘录不为了这一步去建 `01`–`07`。没有知识库时，直接打开白名单里的源码行。已有知识库只加速检索；是不是监听服务，仍以打开的启动函数里有没有 `ListenAndServe` 或等价绑定为准。
 
 ---
 
 ## 与证据治理模型（Core Model）的映射关系
 
-在联合执行「代码核验 + 证据治理审计」时，四类常见代码偏差直接对应 `references/audit-workflow.md` 与 `references/decision-rules.md` 中的标准诊断对象：
+在联合执行「代码核验 + 证据治理审计」时，五类常见代码偏差直接对应 `references/audit-workflow.md` 与 `references/decision-rules.md` 中的标准诊断对象：
 
 | 代码核验偏差类型 | 对应的治理根因 (`Root cause`) | 推荐处置动作 (`Narrative Decision`) | 严重度基准 |
 |---|---|---|---|
@@ -141,6 +175,7 @@ grep -r "embedding\|vector\|chroma" --include="*Service*.java"
 | **偏差 2：状态枚举/流程步骤被简化丢失** | `Evidence-state overreach` / `Semantic-projection failure` | `Reframe` / `Substantiate`（补全真实状态语义与关键流转条件） | **P1** 或 **P2**（视是否影响核心机制结论而定） |
 | **偏差 3：功能声称与实现不一致（如异步写成同步）** | `Completion pressure` / `Evidence-state overreach` | `Narrow` / `Reframe`（按真实 DTO 与异步链路重写机制描述） | **P0**（虚构运行时行为） |
 | **偏差 4：AI 能力边界被夸大（忽略工程门禁/校验层）** | `Proof substitution` / `Completion pressure` | `Narrow` / `Reframe`（如实写出「AI 候选生成 + 工程 gate/validator/converter 校验决策」） | **P0**（夸大算法/AI 能力边界） |
+| **偏差 5：把批处理 CLI 客户端写成常驻 HTTP 服务** | `Proof substitution` / `Completion pressure` | `Narrow`（没有 `ListenAndServe` 或等价绑定时，改写为 CLI / 批处理客户端） | **P0**（虚构进程形态） |
 
 ## 修正版段落的叙事投射自检（Narrative Projection Check）
 
