@@ -1,0 +1,152 @@
+version: 1
+purpose: >
+  Historical failure cases used to verify that structural consolidation preserves
+  the behavior learned in earlier versions without reintroducing append-only rules.
+
+cases:
+  - id: research_engineering_substitution
+    input: "The API returned a match result, therefore the matching algorithm is accurate."
+    expected:
+      claim_types: [Research, Engineering]
+      root_cause: Proof substitution
+      primary_treatment: Restructure
+      required_action: Separate runtime behavior from algorithm performance evidence
+
+  - id: target_presented_as_result
+    input: "The skill-mapping F1 is 0.90 because 0.90 is the project acceptance requirement."
+    expected:
+      claim_type: Research
+      root_cause: Completion pressure
+      primary_treatment: Narrow
+      required_action: Distinguish acceptance target from measured result
+
+  - id: orphan_kappa
+    input: "Model quality will be evaluated with weighted Kappa."
+    expected:
+      claim_type: Research
+      primary_treatment: Substantiate
+      required_action: Define ordinal task, scale, reference rater, weighting, adjudication, and rationale
+
+  - id: ambiguous_actor
+    input: "After confirmation, it is updated and then enters the next chain."
+    expected:
+      claim_type: Engineering
+      root_cause: Semantic-projection failure
+      primary_treatment: Reframe
+      required_action: Name actor, trigger, state mutation, and handoff
+
+  - id: implementation_ontology_leakage
+    input: "The user enters WAITING_INPUT and JOB_MATCH becomes blocked."
+    expected:
+      claim_type: Engineering
+      root_cause: Semantic-projection failure
+      primary_treatment: Reframe
+      required_action: State the user-facing meaning before exact identifiers
+
+  - id: index_as_concept
+    input: "Q1 provides observations, Q3 provides semantics, and Q4 performs evolution."
+    expected:
+      root_cause: Semantic-projection failure
+      primary_treatment: Reframe
+      required_action: Use project concepts as grammatical subjects and labels secondarily
+
+  - id: global_subject_saturation
+    input: "本项目保存岗位材料来源。本项目将技能标准化分为三个阶段。本项目以岗位版本作为时间基线。本研究进一步形成个人能力画像。"
+    expected:
+      root_cause: Semantic-projection failure
+      primary_treatment: Reframe
+      required_action: Restore the nearest method, process, actor, or data object as the semantic subject; do not hide the same failure by rotating project-wide synonyms
+
+  - id: claim_lineage_regression
+    input:
+      evidence_section: "Candidate generation was tested for reproducibility; novelty accuracy was not measured."
+      final_summary: "The project accurately identifies emerging occupations."
+    expected:
+      root_cause: Claim-Lineage propagation failure
+      severity: P0
+      primary_treatment: Narrow
+      required_action: Reconcile the summary with the authoritative claim
+
+  - id: boundary_overexposure
+    input: "The same temporary route defect is repeated in architecture, backend, testing, and summary."
+    expected:
+      root_cause: Disclosure failure
+      primary_treatment: Compress
+      secondary_treatment: Move
+      required_action: Give the boundary one authoritative home
+
+  - id: primary_contribution_displacement
+    input:
+      title: "Knowledge graph construction and dynamic evolution analysis"
+      narrative: "Most experiments and conclusions concern résumé UI and career advice."
+    expected:
+      root_cause: Primary-contribution displacement
+      severity: P1
+      primary_treatment: Restructure
+      required_action: Restore graph construction and evolution as the main proof chain
+
+  - id: expected_value_as_observed_outcome
+    input: "The implemented dashboard improves HR decision efficiency."
+    expected:
+      claim_type: Product/Application
+      root_cause: Proof substitution
+      primary_treatment: Narrow
+      required_action: Distinguish expected value from measured application outcome
+
+  - id: repo_first_outline
+    input: "The chapter follows frontend, backend, agents, database, deployment because those folders exist."
+    expected:
+      root_cause: Source gravity
+      primary_treatment: Restructure
+      required_action: Organize around reader task or argument dependency
+
+  - id: inaccessible_as_absent
+    input: "The auditor cannot access the experiment report, so the project has no experiment evidence."
+    expected:
+      root_cause: Evidence-state overreach
+      severity: P0
+      primary_treatment: Narrow
+      required_action: State auditor inaccessibility rather than project-level absence
+  - id: cross_module_tech_misattribution
+    input: "学生技能标准化模块引入 DashScope Embedding 与 ChromaDB 向量召回完成技能对齐（实际代码中 RAG 仅在 service/jobredraw/ 岗位重绘管线调用，学生技能走精确/别名匹配）。"
+    expected:
+      claim_type: Engineering
+      root_cause: Proof substitution
+      severity: P0
+      primary_treatment: Restructure
+      required_action: Remove RAG attribution from student skill normalization, relocate RAG description to job-redraw pipeline, and output drop-in replacement prose backed by PortraitSkillProfileService code evidence
+
+  - id: state_enum_simplification
+    input: "面试状态机包含 6 个核心状态（实际代码 STATE_POLICY_PROMPT 定义了 11 个状态枚举）。"
+    expected:
+      claim_type: Engineering
+      root_cause: Evidence-state overreach
+      severity: P1
+      primary_treatment: Reframe
+      required_action: Verify exact enum count and state transitions in the core Service implementation and replace with accurate state-machine prose
+
+  - id: sync_async_behavior_mismatch
+    input: "面试结束后 complete() 接口同步返回完整面试评估报告（实际代码返回 reportStatus: pending，由异步评估链路生成）。"
+    expected:
+      claim_type: Engineering
+      root_cause: Completion pressure
+      severity: P0
+      primary_treatment: Narrow
+      required_action: Check Controller/Service return DTOs and rewrite as asynchronous evaluation triggered upon completion
+
+  - id: ai_capability_boundary_exaggeration
+    input: "大模型直接生成最终标准技能标签并入库（实际代码中 AI 仅从候选池中选择，经工程 gate/validator/converter 校验后落库）。"
+    expected:
+      claim_type: Engineering
+      root_cause: Completion pressure
+      severity: P0
+      primary_treatment: Narrow
+      required_action: State the exact boundary between AI candidate selection and deterministic engineering validation gates
+
+  - id: kb_taxonomy_as_formal_outline
+    input: "正式比赛申报书直接照搬本地知识库的 01-overview、02-frontend、03-backend、04-database、07-issues 作为章节大纲，并把 ISSUE-003 缺陷清单原样贴入正文。"
+    expected:
+      root_cause: Source gravity
+      severity: P1
+      primary_treatment: Restructure
+      required_action: Treat the 7+1 knowledge base strictly as an internal Investigator index; organize the formal document around primary contribution and reader reasoning, and filter ISSUE logs through the Claim Necessity Test
