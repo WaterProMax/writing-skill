@@ -118,7 +118,41 @@ def main() -> None:
             f"writing={lite_writing_size}, audit={lite_audit_size}"
         )
 
+    workflow_text = (REFS / "codebase-knowledge-base-workflow.md").read_text(encoding="utf-8")
+    required_grounding = [
+        "清单失效",
+        "running code > Flyway/entities",
+        "阶段 5 增补",
+        "Claim Necessity",
+        "canonical_for",
+        "ListenAndServe",
+        "@TableField",
+    ]
+    missing_grounding = [s for s in required_grounding if s not in workflow_text]
+    if missing_grounding:
+        fail(f"Mode 1 workflow missing grounding anchors: {missing_grounding}")
+
+    if "要求 `read EVERY file`" in workflow_text or "read EVERY file`" in workflow_text:
+        fail("Mode 1 workflow must not require literal 'read EVERY file'")
+
+    if "用户系统/画像/简历" in workflow_text and "不要写死" not in workflow_text:
+        fail("HOME example modules must be placeholderized")
+
+    mode1_markers = [
+        "Mode 1 reading set",
+        "Conflict priority",
+        "Red lines",
+    ]
+    missing_skill = [s for s in mode1_markers if s not in skill_text]
+    if missing_skill:
+        fail(f"SKILL.md Mode 1 grounding markers missing: {missing_skill}")
+
+    if "running code > Flyway/entities" not in skill_text:
+        fail("SKILL.md must state the source conflict order")
+
     print("PASS: unified writing-skill structure is valid")
+    print("PASS: Mode 1 grounding anchors present")
+
     print(f"PASS: Lite writing load = {lite_writing_size} bytes")
     print(f"PASS: Lite audit load = {lite_audit_size} bytes")
 

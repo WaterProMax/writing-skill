@@ -29,17 +29,30 @@ Use `references/core-model.md` as the terminology source of truth.
 
 ### Mode 1 — Knowledge-Base Generation (`codebase-knowledge-base-generation`)
 
-Use when exploring a multi-module codebase (Java/Spring Boot + Vue + Go + Python) to generate a reusable local knowledge base (`docs/knowledge-base/`).
+Use when exploring a multi-module codebase to generate a reusable local Investigator index (default `docs/knowledge-base/`). Mode 1 output is **not** a second Canonical Wiki: `canonical_for` stays empty; if the target repo already has a Wiki, the index opening must point to it and declare non-replacement.
 
-Always read:
-- `references/codebase-knowledge-base-workflow.md`
+**Mode 1 reading set only** (do **not** load Deep-route references):
+- `references/codebase-knowledge-base-workflow.md` (required)
+- `references/core-model.md` — the five canonical objects only
+- `references/decision-rules.md` — **§9 Claim Necessity Test** only
+- Leave `examples.md` / `document-architecture.md` / `audit-workflow.md` for Mode 2/3
 
-Execute the 5-stage pipeline (`breadth-first explore -> parallel deep dive -> sync core read -> structured 7+1 output -> incremental edit`):
-1. **Stage 1 (Explore, <=5 min)**: 1 Explore Agent maps 2-level directories, modules, configs (`pom.xml`, `package.json`, `go.mod`, `requirements.txt`, `Dockerfile`), docs, and line counts.
-2. **Stage 2 (Parallel Background Agents)**: Launch 4+ agents (`run_in_background: true`, `read EVERY file`, `document: purpose, parameters, return types`) for (1) Backend Java Controllers/Services/pom, (2) Frontend Views/Components/Services/Store, (3) AI/Go/Python/SQL/eval scripts, and (4) Database Entities/Mappers/DTOs.
-3. **Stage 3 (Sync Core Read)**: Without waiting, read `PROJECT_CONTEXT.md`/`AGENTS.md`, `功能模块.md`, `application.yml`, `ISSUES.md`, `TEST_REQUIREMENTS.md`, `API_ROUTE_MATRIX.md`, `AI_PROMPTS.md`, and core stores.
-4. **Stage 4 (Structured `7 + 1` Output)**: Write `HOME.md` (role & module navigation) + `01-overview-architecture.md`, `02-frontend-analysis.md`, `03-backend-analysis.md`, `04-database-go-tools.md`, `05-business-flows-testing.md`, `06-ai-prompts-analysis.md`, `07-issues-configuration.md` with exact class/table/field names, line counts, issue statuses, cross-references, and tables.
-5. **Stage 5 (Incremental Edit)**: Use targeted `edit` inserts as background agents return; never rewrite whole files or wait idly.
+**Conflict priority** (one line, always):
+`running code > Flyway/entities > generated OpenAPI > Wiki non-canonical prose > test notes > experiment directories`
+
+**Red lines** (never violate):
+- Do not copy passwords, connection strings, test-account secrets, or full JDBC URLs
+- Do not paste template percentages as measured metrics
+- Do not call a CLI/batch a listening HTTP service until `ListenAndServe`/port bind is found
+- Empty Controllers (class-level `@RequestMapping` only, 0 handler methods) are **not** APIs
+- Keep Java property names separate from physical column names; without `@TableField`, do not invent snake_case columns
+
+Execute the 5-stage pipeline (details in the Mode 1 workflow):
+1. **Stage 1 (Explore, <=5 min)**: map 2-level dirs, modules, configs, docs; line counts from **this run's** `wc`/tools only.
+2. **Stage 2 (Parallel Background Agents)**: coverage declaration (not blanket full-tree reads) — each agent lists enumerated symbols, files fully read, and unread files; unread paths must not appear in behavior sentences. If parallel agents cannot finish in-session, structured main-session extraction is allowed (handle annotation/javadoc separation).
+3. **Stage 3 (Sync Core Read)**: read governance entry (`AGENTS.md` / Wiki repository map) first; treat the sample file list as hints with **inventory invalidation** (missing → new path or Boundary; never use `legacy-designs` same-name history as current).
+4. **Stage 4 (`7 + 1` Output)**: `HOME.md` + `01`..`07`. Derive HOME modules from workspace views / Controller prefixes that appear in code or Wiki canonical pages — do **not** hard-code “用户系统/画像/简历”. Copy issue-note status **verbatim**; spot-check ≥1 per status class; if spot-check disagrees, write both.
+5. **Stage 5**: if background agents only return after the turn ends, ship a “main-session coverage” version first, then insert under the fixed heading `阶段 5 增补` — do not block on waiting edits.
 
 ### Mode 2 — Evidence-Governed Writing (`project-document-evidence-governance` Writing Mode)
 
@@ -86,8 +99,9 @@ Choose the lightest route that preserves correctness.
 |---|---|---|
 | **Lite** | Local paragraph repair or single-passage code verification; source authority and claim are clear | `core-model.md` + mode workflow + `narrative-projection.md` / `code-verification-workflow.md` |
 | **Standard** | Substantive section, one material claim lineage, module KB extraction, or research/engineering/product explanation | Lite set + `claim-evidence-contracts.md` + `decision-rules.md` as needed |
-| **Deep** | Full `7+1` KB, whole-document architecture, multi-source reconciliation, competition proposal, or final audit | Standard set + `document-architecture.md` + `codebase-knowledge-base-workflow.md` + `examples.md` |
+| **Deep** | Whole-document architecture, multi-source reconciliation, competition proposal, or final audit (Mode 2/3/4) | Standard set + `document-architecture.md` + `examples.md` (+ audit/code-verification as needed) |
 
+Mode 1 uses its own reading set above — **never** expand Mode 1 into the Deep reference table.
 Do not turn a local edit into a full governance exercise without a material reason.
 
 ---
@@ -122,7 +136,8 @@ The five objects above are defined only in `references/core-model.md`.
 
 ## Non-negotiable invariants
 
-- Start from reader need, artifact purpose, and section responsibility—not repository folders or knowledge-base numbering (`01`..`07`).
+- **Source conflict order**: `running code > Flyway/entities > generated OpenAPI > Wiki non-canonical prose > test notes > experiment directories`.
+- Start from reader need, artifact purpose, and section responsibility—not repository folders or knowledge-base numbering (`01`..`07`). Mode 1’s `01`..`07` filenames are an Investigator index layout, not a formal-document outline.
 - Route every material claim to **Research**, **Engineering**, or **Product/Application** before judging evidence.
 - Verify every concrete technical description (class/table/field names, state enums, sync/async flows, AI vs engineering gates) against actual source code; never rely on memory.
 - Keep evidence type separate from evidence state.
@@ -145,7 +160,7 @@ The five objects above are defined only in `references/core-model.md`.
 
 ## Output behavior
 
-- **Mode 1 (Knowledge Base)**: Deliver `HOME.md` + `01`..`07` with concrete class/table/field names, line counts, issue statuses, cross-references, and tables.
+- **Mode 1 (Knowledge Base)**: Deliver Investigator-index `HOME.md` + `01`..`07` (`canonical_for` empty; Wiki pointer if present) with concrete names, this-run line counts, verbatim issue statuses (+ spot-check notes), cross-references, and tables — respecting Mode 1 red lines.
 - **Mode 2 (Writing)**: Deliver the requested artifact, not the investigation transcript. Keep rejected facts, source dumps, evidence ledgers, and drafting instructions outside formal prose unless explicitly requested.
 - **Mode 3 (Verification & Governance)**: Diagnose before rewriting. Identify affected claims, code evidence (file + lines), claim type, evidence state, root cause, reader impact, and primary treatment, followed by **drop-in replacement paragraphs** or the P0/P1/P2 audit table.
 - **Direct repair**: Make the smallest coherent repair that resolves the root cause, then recheck the affected claim lineage.

@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.0.1 — Mode 1 grounding fixes from KariosArc trial (`writing-skill`)
+
+Based on the Grok Mode 1 trial on `Lenquest/KariosArc` (`docs/writing-skill-test/TEST_REPORT.md`, fact-grounding **7/10**). Hardens Investigator-index generation so agents do not copy stale skill snapshots or invent unread behavior.
+
+### Fixed / Added (Mode 1)
+
+1. **Inventory invalidation** — Stage 3 now requires: on missing sample paths, consult `AGENTS.md` / Wiki repository map, record the new path or a Boundary; **never** treat `legacy-designs` same-name history as current. Line counts must come from **this run's** `wc`/tools, never from skill examples.
+2. **Conflict priority** — Documented in `SKILL.md` and Mode 1 workflow: `running code > Flyway/entities > generated OpenAPI > Wiki non-canonical prose > test notes > experiment directories`. Issue status is copied **verbatim** from notes, with ≥1 spot-check per status class; disagreements are dual-written.
+3. **Mode 1 reading set** — Mode 1 only forces this workflow + `core-model.md` five objects + Claim Necessity (§9); `examples` / `document-architecture` / `audit-workflow` stay in Mode 2/3. Mode 1 must not expand into the Deep reference table.
+4. **Stage 2 coverage declaration** — Replaces “read EVERY file”: agents must list enumerated symbols, files fully read, and unread files; unread paths must not appear in behavior sentences. Structured main-session extraction is allowed when parallel agents cannot return in-session.
+5. **Stage 5 session model** — If background agents only return after the turn ends, ship a main-session coverage version first, then insert under the fixed heading `阶段 5 增补`.
+6. **Red lines** — No secrets/JDBC URLs; no template percentages as metrics; no CLI-as-HTTP without listen evidence; empty Controllers are not APIs; Java properties ≠ physical columns without `@TableField`; `@Value` default ≠ YAML placeholder default.
+7. **HOME placeholders** — Modules are derived from workspace views / Controller prefixes present in code or Wiki canonical pages; no hard-coded “用户系统/画像/简历”.
+8. **Canonical Wiki coexistence** — Mode 1 output is an Investigator index with empty `canonical_for`; if a Wiki exists, the opening must point to it and declare non-replacement.
+
+Also noted from the trial (directory ownership for third-party / experiment / full-chain notes; frontend stack detection allowing “无路由表”).
+
+### Migration
+
+Existing Mode 1 indexes remain valid as drafts. Re-runs should refresh line counts, re-apply inventory invalidation, and add Wiki pointer + coverage/未覆盖 sections where missing.
+
+---
+
 ## 1.0.0 — Unified Technical Writing, Knowledge Base & Evidence Governance (`writing-skill`)
 
 This release unifies three complementary skills from `Lenquest/KariosArc` into a single, conflict-free, four-mode technical writing and governance skill:
