@@ -19,11 +19,16 @@ The script verifies:
 - separation of `Claim Type` and `Claim Lineage`;
 - inclusion of all 4 operating modes (`Mode 1` through `Mode 4`);
 - bounded router and Lite-route load sizes;
-- absence of version-history prose in `SKILL.md`.
+- absence of version-history prose in `SKILL.md`;
+- Scoped route in `SKILL.md` and `writing-workflow.md` (no Mode 1, no `01`–`07`);
+- Mode 2/3 code-fact red lines and 偏差 5 in `code-verification-workflow.md`;
+- §9「子系统局限性备忘录」in `decision-rules.md`;
+- regression input 「为单体仓库中的一个 CLI 模块写申报边界」 and its three failure signatures.
 
 ## Behavioral regression cases
 
-`regression-cases.yaml` contains 18 historical failure signatures covering both evidence governance and source-code verification:
+`regression-cases.yaml` contains 19 historical failure signatures covering both evidence governance and source-code verification:
 
 - 13 governance regression cases from `project-document-evidence-governance` (proof substitution, target-as-result, orphan metrics, semantic subject ownership / global-subject saturation, Claim Lineage regression, boundary overexposure, primary contribution displacement, etc.);
-- 5 code-verification and KB-bridge regression cases (cross-module RAG misattribution, state-enum simplification, sync-vs-async return mismatch, AI capability boundary exaggeration, and knowledge-base `01`..`07` structure leaking as a formal document outline).
+- 5 code-verification and KB-bridge regression cases (cross-module RAG misattribution, state-enum simplification, sync-vs-async return mismatch, AI capability boundary exaggeration, and knowledge-base `01`..`07` structure leaking as a formal document outline);
+- 1 scoped-limitations case (`scoped_cli_module_boundary`): input 「为单体仓库中的一个 CLI 模块写申报边界」. Failure signatures are producing `01`–`07`, writing that CLI as a listen service, or turning adjacent experiment scores into that CLI’s product metrics.

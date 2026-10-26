@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.0.3 — Scoped limitations memos and Mode 2/3 code-fact red lines (`writing-skill`)
+
+Based on the Grok scoped trial on `Lenquest/KariosArc` (PR #21, subsystem / scoped limitations guidance **6/10**). This score is separate from whole-repo Mode 1 (7/10 on PR #19, 8/10 on PR #20). v1.0.1 and v1.0.2 Mode 1 fixes stay in force. This release teaches a teammate who owns one backend module to stop at **Scoped + Mode 2** instead of building `01`–`07`.
+
+### Fixed / Added
+
+1. **Scoped depth** — `SKILL.md` depth table and stop conditions: when the deliverable is a boundary or limitations memo for one directory or one toolchain, and the user explicitly does not want a whole-repo knowledge base, do not enter Mode 1, do not create `01`–`07`, write a file whitelist first, and open adjacent code only to answer “would this mis-attribute A’s tech to B?”. Words such as 比赛 / 申报 do not promote that task to Deep. Mode 2’s Phase 0 carries the same stop.
+2. **Mode 2/3 code-fact red lines, including 偏差 5** — Listen / empty Controller / secrets and connection strings / Java property ≠ physical column are loadable from `references/code-verification-workflow.md` without entering Mode 1. Mode 1 still states them in its own red lines. 偏差 5: do not write a batch CLI client as a long-lived HTTP service unless the entrypoint has `ListenAndServe` or an equivalent bind. A directory name, a `net/http` import, or an unreferenced URL config is not a bind.
+3. **`decision-rules.md` §9「子系统局限性备忘录」** — One row per entrypoint (process shape, default flags, write targets, gates). Do not merge dry-run defaults across entrypoints. Concentrate can-write / cannot-write in one Boundary section. Experiment scores default to Delete unless this section’s Claim Type is Research and the protocol is complete.
+4. **Competition-doc style yields on Boundary** — When the chapter’s job is Boundary, do not fill RAG’s three layers, drop hedges, or retitle as capability marketing to widen claims. 偏差 4 and §9 outrank `code-verification-workflow.md`（特殊处理：比赛文档）. The priority is written in that section, in §9, and in the `SKILL.md` invariants.
+5. **Infrastructure defaults in formal prose** — Cite source line number and category (loopback / public address / empty DSN). Do not copy host, IP, secret, or JDBC URL into the body.
+6. **Regression** — `tests/regression-cases.yaml` case `scoped_cli_module_boundary`: input 「为单体仓库中的一个 CLI 模块写申报边界」. Failure signatures: producing `01`–`07`, writing the CLI as a listen service, or turning adjacent experiment scores into that CLI’s product metrics.
+
+### Migration
+
+Existing Mode 1 indexes are unchanged. A new limitations memo for one module should start at Scoped, not by re-running Mode 1.
+
+---
+
 ## 1.0.2 — Mode 1 precision & verification gates from KariosArc retest (`writing-skill`)
 
 Based on the second Grok Mode 1 trial on `Lenquest/KariosArc` (PR #20, `docs/writing-skill-test-v101/TEST_REPORT.md`, score **8/10**). Closes the 5 remaining extraction and verification gaps identified in the retest:

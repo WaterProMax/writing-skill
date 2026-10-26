@@ -1,6 +1,6 @@
 ---
 name: writing-skill
-description: Use when generating a structured codebase knowledge base, drafting or revising formal project, competition, research, architecture, or engineering documents from repositories and evidence, or verifying and auditing technical documents against source code and evidence contracts. Unified integration of codebase-knowledge-base-generation, project-document-evidence-governance, and technical-doc-code-verification.
+description: Use when generating a structured codebase knowledge base, drafting or revising formal project, competition, research, architecture, or engineering documents from repositories and evidence, writing a limitations or boundary memo for one directory or toolchain without a whole-repo knowledge base, or verifying and auditing technical documents against source code and evidence contracts. Unified integration of codebase-knowledge-base-generation, project-document-evidence-governance, and technical-doc-code-verification.
 ---
 
 # Unified Technical Writing, Knowledge Base & Evidence Governance (`writing-skill`)
@@ -15,9 +15,11 @@ Three governing rules:
 > **2. Research, engineering, and product claims carry distinct proof obligations.**
 > **3. Verify every technical assertion line-by-line against source code; revisions must be drop-in replacement text.**
 
-The unified transformation is:
+The unified transformation for a **whole-repo** pass (Mode 4) is:
 
 `codebase -> structured knowledge base (7+1) -> artifact brief -> claim record -> evidence profile -> narrative decision -> reader-facing artifact -> code & lineage verification`
+
+**Stop at Scoped** when the deliverable is a boundary or limitations memo for **one directory or one toolchain**, and the user explicitly does not want a whole-repo knowledge base. That task is Mode 2, not this chain: do not enter Mode 1, and do not create `01`–`07`. See **Depth routing**.
 
 Use `references/core-model.md` as the terminology source of truth.
 
@@ -38,7 +40,7 @@ Use when exploring a multi-module codebase to generate a reusable local Investig
 **Conflict priority** (one line, always):
 `running code > Flyway/entities > generated OpenAPI > Wiki non-canonical prose > test notes > experiment directories`
 
-**Red lines** (never violate):
+**Red lines** (never violate). The four code-fact rules (listen, empty Controller, secrets and connection strings, Java property ≠ physical column) are **shared with Mode 2 and Mode 3**. Those modes load them from `references/code-verification-workflow.md` and do not enter Mode 1 to reach them.
 - No passwords, connection strings, test-account secrets, or full JDBC URLs; no template percentages as metrics
 - Do not call a CLI/batch a listening HTTP service without `ListenAndServe`/port bind; empty Controllers (0 handler methods) are **not** APIs
 - Keep Java properties separate from physical columns (without `@TableField`, do not invent snake_case)
@@ -55,7 +57,7 @@ Execute the 5-stage pipeline (details in the Mode 1 workflow):
 
 ### Mode 2 — Evidence-Governed Writing (`project-document-evidence-governance` Writing Mode)
 
-Use when drafting, rewriting, extending, or updating a formal artifact (competition proposal, research paper, architecture whitepaper, or engineering document).
+Use when drafting, rewriting, extending, or updating a formal artifact (competition proposal, research paper, architecture whitepaper, engineering document, or a Scoped boundary/limitations memo for one directory or toolchain).
 
 Always read:
 - `references/core-model.md`
@@ -66,7 +68,7 @@ Load conditionally:
 - `references/decision-rules.md` when evidence is incomplete, conflicting, delegated, scope-sensitive, limitation-bearing, or spread across multiple surfaces;
 - `references/narrative-projection.md` when producing or repairing reader-facing prose;
 - `references/document-architecture.md` for whole-document structure, chapter responsibility, title/rubric alignment, or cross-layer argument design;
-- `references/code-verification-workflow.md` when embedding concrete code/table/API facts or competition-specific descriptions;
+- `references/code-verification-workflow.md` when embedding concrete code/table/API facts, writing a Scoped limitations memo, or competition-specific descriptions. This file holds the **Mode 2/3 code-fact red lines** (listen / empty Controller / secrets and connection strings / Java property ≠ physical column, plus 偏差 5). Do not load the Mode 1 workflow to reach them;
 - `references/examples.md` only when concrete failure signatures or rewrite patterns are useful.
 
 ### Mode 3 — Code Verification & Governance Audit (`technical-doc-code-verification` + Governance Mode)
@@ -80,9 +82,11 @@ Always read:
 
 Load the conditional references from Mode 2 according to the issue under review. Do not load the full reference set mechanically.
 - **Line-by-Line Verification (5 Steps)**: Split into atomic assertions -> query KB then read source -> separate online main chains from offline/auxiliary tools -> classify (`Exact match` / `Minor polish` / `Architecture misattribution` / `Exaggerated claim`) -> output `(1) quote, (2) file + lines, (3) drop-in replacement paragraph`.
-- **4 Common Code Deviations**: (1) Cross-system tech misattribution (e.g., RAG/ChromaDB); (2) Omitted state enums/steps; (3) Sync claim vs async return (`reportStatus: "pending"`); (4) AI boundary exaggeration (ignoring engineering gates/validators).
+- **5 Common Code Deviations**: (1) Cross-system tech misattribution (e.g., RAG/ChromaDB); (2) Omitted state enums/steps; (3) Sync claim vs async return (`reportStatus: "pending"`); (4) AI boundary exaggeration (ignoring engineering gates/validators); (5) Batch CLI client written as a long-lived HTTP service (needs `ListenAndServe` or an equivalent bind — not a directory name, a `net/http` import, or an unreferenced URL config).
 
 ### Mode 4 — End-to-End Pipeline (KB -> Governed Writing -> Code & Lineage Audit)
+
+Do not start Mode 4 when **Scoped** applies (one directory or toolchain; user refused a whole-repo knowledge base).
 
 1. Build or consult the `7 + 1` Knowledge Base (`references/codebase-knowledge-base-workflow.md`) as the Investigator fact store.
 2. Draft the reader-facing artifact via `references/writing-workflow.md` without letting `01`..`07` file structure or `ISSUES.md` defect lists become the narrative outline.
@@ -96,11 +100,18 @@ Choose the lightest route that preserves correctness.
 
 | Depth | Use when | Typical references |
 |---|---|---|
+| **Scoped** | Boundary or limitations for **one directory or one toolchain**, and the user explicitly does **not** want a whole-repo knowledge base | **Stop here.** Mode 2 only. Do **not** enter Mode 1. Do **not** create `HOME.md` or `01`–`07`. First write a file whitelist. Adjacent code may answer only “would this mis-attribute A’s tech to B?”. Read `core-model.md`, `writing-workflow.md`, `decision-rules.md` §9（子系统局限性备忘录）, and `code-verification-workflow.md` code-fact red lines（含偏差 5）. Do **not** load `codebase-knowledge-base-workflow.md`, `document-architecture.md`, or `examples.md`. Words such as 比赛 / 申报 do **not** promote this task to Deep. |
 | **Lite** | Local paragraph repair or single-passage code verification; source authority and claim are clear | `core-model.md` + mode workflow + `narrative-projection.md` / `code-verification-workflow.md` |
 | **Standard** | Substantive section, one material claim lineage, module KB extraction, or research/engineering/product explanation | Lite set + `claim-evidence-contracts.md` + `decision-rules.md` as needed |
-| **Deep** | Whole-document architecture, multi-source reconciliation, competition proposal, or final audit (Mode 2/3/4) | Standard set + `document-architecture.md` + `examples.md` (+ audit/code-verification as needed) |
+| **Deep** | Whole-document architecture, multi-source reconciliation, a competition proposal whose chapter job is capability (not a single-subsystem Boundary), or final audit (Mode 2/3/4) | Standard set + `document-architecture.md` + `examples.md` (+ audit/code-verification as needed) |
 
-Mode 1 uses its own reading set above — **never** expand Mode 1 into the Deep reference table.
+**Scoped stop conditions** (apply before Mode 1, Mode 4, or Deep):
+
+1. Deliverable is boundary/limitations, scope is one directory or one toolchain, and the user has refused a whole-repo knowledge base.
+2. Do not build the `7+1` index “first so the memo has evidence.” Evidence is the whitelist plus opened lines in those files.
+3. Do not describe that CLI or batch client as a listening service without a bind. That check is 偏差 5 in `code-verification-workflow.md`, not a Mode 1 stage.
+
+Mode 1 uses its own reading set above — **never** expand Mode 1 into the Deep reference table. Scoped does not enter Mode 1.
 Do not turn a local edit into a full governance exercise without a material reason.
 
 ---
@@ -151,7 +162,7 @@ The five objects above are defined only in `references/core-model.md`.
 - Name concrete actors, objects, and conditions when describing engineering actions.
 - Use the nearest semantic owner as the grammatical subject when one exists; reserve project-wide wrappers such as "本项目 / 本文 / 本研究 / 系统 / we / the project" for genuine framing, ownership, scope, or synthesis, and never mask global-subject saturation via synonym rotation.
 - Keep necessary limitations accurate but give each material boundary one deliberate authoritative home.
-- In competition prose, explicitly name multi-layer technical mechanisms (e.g., Retrieval/Augmented/Generation), avoid hedging ("试图/尝试"), never overclaim AI boundaries, and deliver copy-pasteable paragraphs.
+- In competition prose whose chapter job is a **capability**, explicitly name multi-layer technical mechanisms (e.g., Retrieval/Augmented/Generation), avoid hedging ("试图/尝试"), never overclaim AI boundaries, and deliver copy-pasteable paragraphs. **When the chapter’s job is Boundary, that style yields:** do not fill RAG’s three layers, drop hedges, or retitle the section as capability marketing in order to widen claims. 偏差 4 and `decision-rules.md` §9 outrank the competition-document section; the priority is stated in `code-verification-workflow.md`.
 - Preserve the document's primary contribution as defined by the title, rubric, adopted scope, and owner intent.
 - Reserve strategic emphasis and unsupported project decisions for the human owner.
 
@@ -186,7 +197,7 @@ Do not stop merely because an initial search did not find evidence. Classify the
 - `references/writing-workflow.md` — preventive drafting workflow
 - `references/audit-workflow.md` — post-writing audit and repair workflow
 - `references/codebase-knowledge-base-workflow.md` — 5-stage parallel codebase exploration and `7 + 1` knowledge-base generation
-- `references/code-verification-workflow.md` — line-by-line code verification, 4 deviation types, competition rules, and drop-in revision format
+- `references/code-verification-workflow.md` — Mode 2/3 code-fact red lines, line-by-line verification, 5 deviation types (including CLI ≠ listen), competition rules that yield on Boundary chapters, and drop-in revision format
 - `references/claim-evidence-contracts.md` — Research, Engineering, and Product/Application proof obligations
 - `references/decision-rules.md` — evidence, scope, disclosure, severity, and treatment judgments
 - `references/narrative-projection.md` — projection from internal structures to precise formal prose
