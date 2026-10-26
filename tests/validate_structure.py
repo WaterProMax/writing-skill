@@ -127,6 +127,11 @@ def main() -> None:
         "canonical_for",
         "ListenAndServe",
         "@TableField",
+        "独立工具/采集进程",
+        "schoolFetch(",
+        "占位：后台探索尚未回传，以下仅为主会话已核对范围。",
+        "未打开源码核对（仅保留手记原词）",
+        "本表仅证明符号/映射在源码中存在，不代表方法体分支、鉴权或运行时业务契约已验证",
     ]
     missing_grounding = [s for s in required_grounding if s not in workflow_text]
     if missing_grounding:
@@ -142,6 +147,11 @@ def main() -> None:
         "Mode 1 reading set",
         "Conflict priority",
         "Red lines",
+        "独立工具/采集进程",
+        "schoolFetch(",
+        "占位：后台探索尚未回传，以下仅为主会话已核对范围。",
+        "未打开源码核对（仅保留手记原词）",
+        "本表仅证明符号/映射在源码中存在，不代表方法体分支、鉴权或运行时业务契约已验证",
     ]
     missing_skill = [s for s in mode1_markers if s not in skill_text]
     if missing_skill:

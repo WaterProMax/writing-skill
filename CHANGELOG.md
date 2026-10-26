@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.2 — Mode 1 precision & verification gates from KariosArc retest (`writing-skill`)
+
+Based on the second Grok Mode 1 trial on `Lenquest/KariosArc` (PR #20, `docs/writing-skill-test-v101/TEST_REPORT.md`, score **8/10**). Closes the 5 remaining extraction and verification gaps identified in the retest:
+
+### Fixed / Added (Mode 1)
+
+1. **Repo-wide entry scan before directory-ownership split** — Scan `@RestController` / `@RequestMapping` / `go.mod` across the entire repository first, then split by directory ownership into **主产品进程** vs **独立工具/采集进程（如 `tools/**`）**, preventing missed tool processes while keeping tool endpoints out of main-product API tables.
+2. **Frontend API wrapper follow-through** — Extracting API literals must first identify and follow local request wrappers (`schoolFetch(`, `request(`, `apiClient`) in addition to raw `fetch(` / `axios`; unfollowed wrapper calls must be listed under `未覆盖`, and negative claims like “前端无某模块 API” are strictly forbidden.
+3. **Stage 5 fixed placeholder & return-draft verification gate** — Before background agents return, `## 阶段 5 增补` uses the exact placeholder `占位：后台探索尚未回传，以下仅为主会话已核对范围。`; once returned, remove the placeholder and filter out any sub-agent default hosts/secrets, comment-inferred column names, or method-body behavior descriptions not verified line-by-line by the main session.
+4. **Explicit source-opening rule for issue spot-checks** — Spot-checking `ISSUES.md` / test notes is defined as opening the named source files to verify current implementation (noting no process re-run); if a source file was not opened, write `未打开源码核对（仅保留手记原词）` rather than “仍破损” or “已修复”.
+5. **Non-runtime contract disclaimer on static symbol tables** — Every annotation/static-scan symbol table (Controller mappings, entities, frontend API paths) must carry the fixed header/opening disclaimer: `本表仅证明符号/映射在源码中存在，不代表方法体分支、鉴权或运行时业务契约已验证`.
+
+---
+
+
 ## 1.0.1 — Mode 1 grounding fixes from KariosArc trial (`writing-skill`)
 
 Based on the Grok Mode 1 trial on `Lenquest/KariosArc` (`docs/writing-skill-test/TEST_REPORT.md`, fact-grounding **7/10**). Hardens Investigator-index generation so agents do not copy stale skill snapshots or invent unread behavior.

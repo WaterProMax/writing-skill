@@ -35,6 +35,9 @@ Example: if `API_ROUTE_MATRIX.md` says 404 but a Controller mapping exists, the 
 - Keep **Java property names** separate from **physical column names**. Without `@TableField` / explicit DDL, do **not** invent snake_case columns; say “物理列名未在注解中声明”.
 - `@Value` / code defaults are **not** the same as YAML placeholder defaults — record both when they differ.
 - Directory ownership: treat third-party trees (e.g. upstream embedding kits), `product-analysis/`-style experiment families, and `full-chain-testing/`-style notes as **evidence / experiment**, not as live product specs or online services, unless running code proves otherwise.
+- **Controller 与入口扫描范围先全仓库再按目录所有权拆分**：扫描注解（如 `@RestController` / `@RequestMapping` / `go.mod`）时先扫全仓库，再按目录所有权拆分为「主产品进程」与「独立工具/采集进程（如 `tools/**`）」，既不漏扫工具进程，也不把工具进程的接口混入主产品 API 表。
+- **前端请求字面量提取必须跟进本地包装函数**：提取 API 调用路径时，除了直接搜 `fetch(` / `axios`，必须先识别本地封装函数（如 `schoolFetch(`、`request(`、`apiClient`），对包装函数调用一并提取；未跟进的包装调用只能记入「未覆盖」，严禁写出「前端无某模块 API」的否定结论。
+- **符号表自带「非运行时行为契约」声明**：每张由注解/静态扫描生成的符号表（Controller 映射表、实体表、前端 API 路径表）表头或首段必须带一句固定提示：「本表仅证明符号/映射在源码中存在，不代表方法体分支、鉴权或运行时业务契约已验证」，防止下游 Mode 2 直接把符号表当成已验证的产品功能写进正式文档。
 
 ---
 
@@ -80,16 +83,17 @@ Example: if `API_ROUTE_MATRIX.md` says 404 but a Controller mapping exists, the 
 ### Agent 分工策略
 
 ```
-Agent 1: 后端 Java 源码结构
+Agent 1: 后端与独立工具进程源码结构
+  - 先全仓库扫描 `@RestController` / `@RequestMapping` / `go.mod` 等入口，再按目录所有权拆分为「主产品进程」与「独立工具/采集进程（如 `tools/**`）」（既不漏扫 `tools/**` 等独立进程，也不混入主产品 API 表）
   - 列出所有包下的所有类名
-  - 每个 Controller 的 URL 映射（跳过方法数为 0 的空壳）
+  - 每个 Controller 的 URL 映射（跳过方法数为 0 的空壳；表头附非运行时契约声明）
   - 每个 Service 的职责
   - pom.xml 依赖分析
 
 Agent 2: 前端源码结构
   - 先探测栈：有无 vue-router / Pinia / Vuex；无路由表时写「无路由表」，不要发明 routes
   - 组件 props/events/methods（按实际栈书写；可为 reactive() 组合式状态）
-  - 每个 service 的 API 调用（`fetch` / axios 字面量）
+  - 每个 service 的 API 调用：除直接搜 `fetch(` / `axios` 外，必须先识别本地包装函数（如 `schoolFetch(`、`request(`、`apiClient`）并一并提取；未跟进的包装调用只能记入「未覆盖」，严禁写出「前端无某模块 API」的否定结论
   - package.json 依赖分析
 
 Agent 3: AI 服务 + 工具脚本 + SQL
@@ -148,7 +152,9 @@ Agent 4: 数据库 Entity + Mapper + DTO
 - **禁止**用 `legacy-designs`、归档目录或其他历史树中的**同名文件**充当现行实现或现行提示词。
 - 行数、矩阵结论、ISSUE「已修复」等：**必须以本次工具统计与源码抽查为准**；**不得沿用本技能文本里的示例行数或示例状态**（例如不得照抄技能或旧索引里的绝对行数）。
 
-手记与矩阵冲突时，遵守全局 **Conflict priority**；Mode 1 抄录 ISSUE 状态时用**手记原词**（如「已修复 / 已确认 / 已作废」），不要擅自改成技能示例里的二元「已修复/未修复」。至少对每类状态抽查一条；抽查与原词不一致时**两个都写**。
+手记与矩阵冲突时，遵守全局 **Conflict priority**；Mode 1 抄录 ISSUE 状态时用**手记原词**（如「已修复 / 已确认 / 已作废」），不要擅自改成技能示例里的二元「已修复/未修复」。
+- **手记状态抽查方式明确化**：抽查 `ISSUES.md` / 测试手记状态时，定义为「打开手记点名的源文件核对当前代码实现（并在文中注明未启动进程重跑）」；至少对每类状态抽查一条，抽查与原词不一致时**两个都写**。
+- 若未打开对应源文件，必须写「未打开源码核对（仅保留手记原词）」，严禁把未打开写成“仍破损”或“已修复”。
 
 ## 阶段 4: 结构化文档输出
 
@@ -180,9 +186,9 @@ Agent 4: 数据库 Entity + Mapper + DTO
 2. **有数字，有行数** — 行数必须来自**本次** `wc`/工具统计，不得沿用技能示例
 3. **标注状态用原词** — 抄录手记状态原词，并做每类至少一条抽查；不一致则双写
 4. **交叉引用** — 前端 View → 后端 Controller → 数据表之间建立关联
-5. **使用表格** — 大量信息用表格呈现，可扫描、易查阅
+5. **使用表格并附非运行时契约声明** — 大量信息用表格呈现；每张由注解/静态扫描生成的符号表（Controller 映射表、实体表、前端 API 路径表）表头或首段必须带固定提示：「本表仅证明符号/映射在源码中存在，不代表方法体分支、鉴权或运行时业务契约已验证」
 6. **面向写文档的人** — 他们需要的是对接关系与字段事实，而不是把 `ISSUES.md` 整份搬进附录（先过 Claim Necessity）
-7. **遵守红线** — 口令、空壳 API、臆造列名、把 CLI 写成 HTTP 服务等一律禁止
+7. **遵守红线** — 口令、空壳 API、臆造列名、把 CLI 写成 HTTP 服务、漏跟进前端包装函数而下否定结论等一律禁止
 
 ### HOME 模块导航（占位规则）
 
@@ -211,25 +217,27 @@ HOME.md (索引 + 快速导航)
 
 后台 Agent 的完成时间不可预测。部分 Agent 可能需要 2-5 分钟甚至更长。如果你在阶段 3 同步读取到足够的核心信息，不应等待所有 Agent 完成再开始写入——应该在读取到关键文件后立即开始结构化输出。
 
-### 会话模型承认
+### 会话模型承认与固定占位句
 
 若运行环境里后台 Agent **只能在回合结束后**把结果返回主会话：
 
 1. 允许先提交「**主会话覆盖范围**」版本（写明已覆盖 / 未覆盖）。
-2. 待 Agent 结果可用后，用定点插入补充，并使用固定标题：
+2. 当后台探索尚未返回时，在固定标题 `## 阶段 5 增补` 下必须使用固定占位句：
 
 ```markdown
 ## 阶段 5 增补
+
+占位：后台探索尚未回传，以下仅为主会话已核对范围。
 ```
 
-3. **不要**要求边空等边改；也不要为了等 Agent 而阻塞首次提交。
+3. 后台返回后删除该占位句并插入增量；**不要**要求边空等边改，也不要为了等 Agent 而阻塞首次提交。
 
-**Agent 返回后的处理策略**：
+**Agent 返回后的处理策略与二次核验门槛**：
 
 1. **不重写整个文件** — 使用 `edit` 工具对已有文件进行定点插入/替换
 2. **补充而非覆盖** — Agent 返回的信息应是"增量细节"而非"全新内容"
 3. **合并到对应章节** — 后端 → `03`；数据库 → `04`；并再次对照 Conflict priority
-4. **拒绝不安全推断** — 调查稿若把无 `@TableField` 的属性自动写成物理列名，或把无品牌字面量的 URL 写成某向量库品牌，索引不得采纳
+4. **二次核验门槛（严禁盲信子 Agent）** — 子 Agent 自称“已通读”不等于主会话已核验。**后台返回稿中的默认主机/口令、注释列名、未经主会话打开源文件核对行号的方法体行为描述，严禁原样贴入**；调查稿若把无 `@TableField` 的属性自动写成物理列名，或把无品牌字面量的 URL 写成某向量库品牌，索引一律不得采纳
 
 ### 操作模式
 

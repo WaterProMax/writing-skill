@@ -9,13 +9,11 @@ description: Use when generating a structured codebase knowledge base, drafting 
 
 Transform multi-module repositories, experiments, runtime records, and internal evidence into structured knowledge bases, formal audience-facing documents, or code-verified revisions.
 
-The skill follows three governing rules:
+Three governing rules:
 
-> **1. Evidence is a source of truth, not a source of narrative.** Repository directories and knowledge-base files (`01`..`07`) provide verifiable facts, never the chapter outline of a formal document.
->
-> **2. Research, engineering, and product claims have different proof obligations and cannot substitute for one another.**
->
-> **3. Every technical assertion must be verified line-by-line against source code, and revisions must be drop-in replacement text.**
+> **1. Evidence is truth, not narrative.** Repo folders and KB files (`01`..`07`) supply verifiable facts, never the outline of a formal document.
+> **2. Research, engineering, and product claims carry distinct proof obligations.**
+> **3. Verify every technical assertion line-by-line against source code; revisions must be drop-in replacement text.**
 
 The unified transformation is:
 
@@ -41,18 +39,19 @@ Use when exploring a multi-module codebase to generate a reusable local Investig
 `running code > Flyway/entities > generated OpenAPI > Wiki non-canonical prose > test notes > experiment directories`
 
 **Red lines** (never violate):
-- Do not copy passwords, connection strings, test-account secrets, or full JDBC URLs
-- Do not paste template percentages as measured metrics
-- Do not call a CLI/batch a listening HTTP service until `ListenAndServe`/port bind is found
-- Empty Controllers (class-level `@RequestMapping` only, 0 handler methods) are **not** APIs
-- Keep Java property names separate from physical column names; without `@TableField`, do not invent snake_case columns
+- No passwords, connection strings, test-account secrets, or full JDBC URLs; no template percentages as metrics
+- Do not call a CLI/batch a listening HTTP service without `ListenAndServe`/port bind; empty Controllers (0 handler methods) are **not** APIs
+- Keep Java properties separate from physical columns (without `@TableField`, do not invent snake_case)
+- Scan annotations/entries (`@RestController`/`@RequestMapping`/`go.mod`) repo-wide first, then split by directory ownership into **主产品进程** vs **独立工具/采集进程（如 `tools/**`）**
+- Frontend API extraction must follow local wrapper functions (`schoolFetch(`, `request(`, `apiClient`) in addition to raw `fetch(`/axios; unfollowed wrappers go to `未覆盖`, never “前端无某模块 API”
+- Every static symbol table (Controller, entity, frontend API table) must open with: `本表仅证明符号/映射在源码中存在，不代表方法体分支、鉴权或运行时业务契约已验证`
 
 Execute the 5-stage pipeline (details in the Mode 1 workflow):
-1. **Stage 1 (Explore, <=5 min)**: map 2-level dirs, modules, configs, docs; line counts from **this run's** `wc`/tools only.
-2. **Stage 2 (Parallel Background Agents)**: coverage declaration (not blanket full-tree reads) — each agent lists enumerated symbols, files fully read, and unread files; unread paths must not appear in behavior sentences. If parallel agents cannot finish in-session, structured main-session extraction is allowed (handle annotation/javadoc separation).
-3. **Stage 3 (Sync Core Read)**: read governance entry (`AGENTS.md` / Wiki repository map) first; treat the sample file list as hints with **inventory invalidation** (missing → new path or Boundary; never use `legacy-designs` same-name history as current).
-4. **Stage 4 (`7 + 1` Output)**: `HOME.md` + `01`..`07`. Derive HOME modules from workspace views / Controller prefixes that appear in code or Wiki canonical pages — do **not** hard-code “用户系统/画像/简历”. Copy issue-note status **verbatim**; spot-check ≥1 per status class; if spot-check disagrees, write both.
-5. **Stage 5**: if background agents only return after the turn ends, ship a “main-session coverage” version first, then insert under the fixed heading `阶段 5 增补` — do not block on waiting edits.
+1. **Stage 1 (Explore, <=5 min)**: map 2-level dirs, ownership, modules, configs, docs; line counts from **this run's** `wc`/tools only.
+2. **Stage 2 (Parallel Background Agents)**: coverage declaration (enumerated symbols, files read, unread files; unread paths never in behavior prose). Scan repo-wide then split main product vs `tools/**` processes; follow frontend request wrappers.
+3. **Stage 3 (Sync Core Read)**: read governance entry (`AGENTS.md` / Wiki map) first; apply **inventory invalidation** (missing → new path or Boundary; never `legacy-designs`). Spot-check issue status by **opening named source files** (note no process re-run); if unopened, write `未打开源码核对（仅保留手记原词）`.
+4. **Stage 4 (`7 + 1` Output)**: `HOME.md` + `01`..`07` with symbol-table non-runtime disclaimers, verbatim issue statuses, and HOME modules derived from code/Wiki (never hard-code “用户系统/画像/简历”).
+5. **Stage 5**: before background agents return, place `占位：后台探索尚未回传，以下仅为主会话已核对范围。` under `阶段 5 增补`; on return, delete the placeholder and merge only main-session-verified facts (never paste sub-agent default hosts/secrets, comment-inferred columns, or unverified method behavior).
 
 ### Mode 2 — Evidence-Governed Writing (`project-document-evidence-governance` Writing Mode)
 
@@ -80,8 +79,8 @@ Always read:
 - `references/code-verification-workflow.md`
 
 Load the conditional references from Mode 2 according to the issue under review. Do not load the full reference set mechanically.
-- **Line-by-Line Code Verification (5 Steps)**: Split prose into atomic assertions -> query `docs/knowledge-base/` then `grep`/read actual code -> distinguish main online call chains from offline/auxiliary tools -> classify into 4 response tiers (`Exact match` / `Minor polish` / `Architecture misattribution` / `Exaggerated claim`) -> output `(1) original quote, (2) file path + key lines, (3) full drop-in replacement paragraph`.
-- **Screen for the 4 Common Code Deviations**: (1) Misattributing System A's technology (e.g., RAG/ChromaDB) to System B; (2) Simplifying or omitting state enums / workflow steps; (3) Claiming synchronous output where code returns asynchronous status (e.g., `reportStatus: "pending"`); (4) Exaggerating AI boundaries (presenting AI candidate suggestions + engineering gates/validators as direct AI final decisions).
+- **Line-by-Line Verification (5 Steps)**: Split into atomic assertions -> query KB then read source -> separate online main chains from offline/auxiliary tools -> classify (`Exact match` / `Minor polish` / `Architecture misattribution` / `Exaggerated claim`) -> output `(1) quote, (2) file + lines, (3) drop-in replacement paragraph`.
+- **4 Common Code Deviations**: (1) Cross-system tech misattribution (e.g., RAG/ChromaDB); (2) Omitted state enums/steps; (3) Sync claim vs async return (`reportStatus: "pending"`); (4) AI boundary exaggeration (ignoring engineering gates/validators).
 
 ### Mode 4 — End-to-End Pipeline (KB -> Governed Writing -> Code & Lineage Audit)
 
@@ -137,7 +136,7 @@ The five objects above are defined only in `references/core-model.md`.
 ## Non-negotiable invariants
 
 - **Source conflict order**: `running code > Flyway/entities > generated OpenAPI > Wiki non-canonical prose > test notes > experiment directories`.
-- Start from reader need, artifact purpose, and section responsibility—not repository folders or knowledge-base numbering (`01`..`07`). Mode 1’s `01`..`07` filenames are an Investigator index layout, not a formal-document outline.
+- Start from reader need, artifact purpose, and section role—not repo folders or KB numbering (`01`..`07`, which is an Investigator index layout, never a formal outline).
 - Route every material claim to **Research**, **Engineering**, or **Product/Application** before judging evidence.
 - Verify every concrete technical description (class/table/field names, state enums, sync/async flows, AI vs engineering gates) against actual source code; never rely on memory.
 - Keep evidence type separate from evidence state.
