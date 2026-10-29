@@ -43,6 +43,8 @@ Apply these whenever formal prose states a code fact, including a Scoped limitat
 
 ## 常见的五类偏差
 
+下列典型案例、断言拆解和修正段里的模块名、表名、供应商名与状态常量只说明偏差长什么样。换仓库时以打开的源码为准。不要把这些标识符写进与之无关的项目。
+
 ### 偏差 1: 把 A 系统的技术特征错误归因到 B 系统
 
 **典型案例**: 把"RAG 语义向量召回"说成学生技能标准化的能力，但实际代码中 RAG 只用于岗位重绘管线（`service/jobredraw/`），学生技能匹配走的是 `PortraitSkillProfileService.mapFeedbackEvidenceToSkills()` 中精确/别名匹配。
@@ -84,7 +86,7 @@ Apply these whenever formal prose states a code fact, including a Scoped limitat
 
 ### Step 1: 拆解文档为可核验的断言
 
-把用户提交的文档段落拆成逐条技术断言，每条一句话：
+把用户提交的文档段落拆成逐条技术断言，每条一句话。下面三条是拆解示例，表名与组件名不代表目标仓库：
 
 ```
 断言 1: "系统将技能项保存至 biz_student_portrait_skill 表"
@@ -145,7 +147,7 @@ grep -r "embedding\|vector\|chroma" --include="*Service*.java"
 2. **避免过度谦逊**：如实写出技术实现，不添加"试图""尝试"等弱化词
 3. **但不过度夸大**：代码做不到的事不承诺，特别是 AI 的行为边界
 4. **表名不加引号包围**：直接用 `table_name` 而非"table_name 表"
-5. **段落标题要体现技术深度**："AI 个性化简历生成"比"简历功能"更有说服力
+5. **段落标题要体现技术深度**：用机制名而不是空泛功能名（e.g. 「检索–增强–生成链路」比「相关功能」更具体）。不要把其他项目的功能名（例如「简历」）写进与之无关的标题。
 
 ### 章节职责是 Boundary 时，本节约让路
 
@@ -180,6 +182,6 @@ Scoped 局限性备忘录不为了这一步去建 `01`–`07`。没有知识库�
 ## 修正版段落的叙事投射自检（Narrative Projection Check）
 
 在输出「修正版」可直接替换文本前，必须同步满足 `references/narrative-projection.md` 的三项铁律：
-1. **语义主语归属（Nearest Semantic Owner）**：不要在修正段落中连续以「本项目 / 本文 / 本系统」开头（避免 Global-subject saturation），应以具体机制、模块、数据结构或业务过程作为主语（如「岗位重绘管线通过 ChromaDB 向量检索召回候选技能……」「能力画像服务基于精确与别名映射规则……」）。
-2. **项目概念优先于代码标识符（Project Ontology before Implementation Ontology）**：先用自然中文阐述业务与工程语义，再在必要处标注精确表名（如 `biz_student_portrait_skill`，不加引号包围）或状态常量（如 `WAITING_INPUT`）。
+1. **语义主语归属（Nearest Semantic Owner）**：不要在修正段落中连续以「本项目 / 本文 / 本系统」开头（避免 Global-subject saturation），应以具体机制、模块、数据结构或业务过程作为主语（e.g. 「同步任务在校验通过后写入目标表……」「批处理客户端按配置路径导出结果……」）。主语里的领域名词必须来自当前仓库，不要照抄其他项目的模块名。
+2. **项目概念优先于代码标识符（Project Ontology before Implementation Ontology）**：先用自然中文阐述业务与工程语义，再在必要处标注精确表名（e.g. `order_item`，不加引号包围）或状态常量（e.g. `PENDING`）。标识符必须来自当前仓库已打开的源码；这里的名字只说明写法。
 3. **零审计残留（No Audit Residue）**：修正版正文中严禁出现「经核查代码发现」「原文档有误」「暂未实现」等审查过程话术，确保用户复制粘贴即可直接合入正式申报书或技术文档。

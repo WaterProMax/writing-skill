@@ -130,7 +130,7 @@ def main() -> None:
         "ListenAndServe",
         "@TableField",
         "独立工具/采集进程",
-        "schoolFetch(",
+        "e.g., custom wrapper functions such as",
         "占位：后台探索尚未回传，以下仅为主会话已核对范围。",
         "未打开源码核对（仅保留手记原词）",
         "本表仅证明符号/映射在源码中存在，不代表方法体分支、鉴权或运行时业务契约已验证",
@@ -142,15 +142,17 @@ def main() -> None:
     if "要求 `read EVERY file`" in workflow_text or "read EVERY file`" in workflow_text:
         fail("Mode 1 workflow must not require literal 'read EVERY file'")
 
-    if "用户系统/画像/简历" in workflow_text and "不要写死" not in workflow_text:
-        fail("HOME example modules must be placeholderized")
+    if "用户系统/画像/简历" not in workflow_text or "不要写死" not in workflow_text:
+        fail("HOME example modules must stay an anti-pattern, not a default taxonomy")
+    if "只是反例" not in workflow_text:
+        fail("Mode 1 workflow must label foreign module names as an anti-pattern")
 
     mode1_markers = [
         "Mode 1 reading set",
         "Conflict priority",
         "Red lines",
         "独立工具/采集进程",
-        "schoolFetch(",
+        "e.g., custom wrapper functions such as",
         "占位：后台探索尚未回传，以下仅为主会话已核对范围。",
         "未打开源码核对（仅保留手记原词）",
         "本表仅证明符号/映射在源码中存在，不代表方法体分支、鉴权或运行时业务契约已验证",
@@ -158,6 +160,17 @@ def main() -> None:
     missing_skill = [s for s in mode1_markers if s not in skill_text]
     if missing_skill:
         fail(f"SKILL.md Mode 1 grounding markers missing: {missing_skill}")
+
+    for label, text in (("SKILL.md", skill_text), ("Mode 1 workflow", workflow_text)):
+        for token in ("apiClient", "schoolFetch"):
+            if token not in text:
+                fail(f"{label} must keep illustrative wrapper token {token}")
+        if "e.g., custom wrapper functions such as" not in text:
+            fail(f"{label} must label request wrappers as illustrative examples")
+    if "用户系统/画像/简历" not in skill_text or "never hard-code" not in skill_text:
+        fail("SKILL.md must forbid hard-coded module names from another project")
+    if "illustrative anti-pattern only" not in skill_text:
+        fail("SKILL.md must label foreign module names as an illustrative anti-pattern")
 
     if "running code > Flyway/entities" not in skill_text:
         fail("SKILL.md must state the source conflict order")
@@ -219,9 +232,42 @@ def main() -> None:
         if signature not in cases_text:
             fail(f"regression case missing signature: {signature}")
 
+    readme_text = readme.read_text(encoding="utf-8")
+    changelog_text = changelog.read_text(encoding="utf-8")
+    banned_in_rules = ("Lenquest", "KariosArc", "PR #21")
+    for path in (skill, readme, *sorted(REFS.glob("*.md"))):
+        text = path.read_text(encoding="utf-8")
+        hits = [token for token in banned_in_rules if token in text]
+        if hits:
+            fail(
+                f"{path.name} still hard-codes historical origin {hits}; "
+                "move it to CHANGELOG.md"
+            )
+    for token in ("Lenquest/KariosArc", "PR #21", "## 1.1.0"):
+        if token not in changelog_text:
+            fail(f"CHANGELOG.md must keep release history anchor: {token}")
+    if "v1.1.0" not in readme_text:
+        fail("README.md must state v1.1.0")
+    readme_sections = [
+        "团队 AI 协作三件套",
+        "dev-skill",
+        "drawing-skill",
+        "一键复制话术模板（直接喂给 Cursor / Claude Code / Cloud Agent）",
+        "场景 A：Mode 1 整库知识库生成",
+        "场景 B：Mode 2 + Scoped 单模块/单目录边界与局限性备忘录",
+        "场景 C：Mode 2 + Standard/Deep 正式项目文档 / 比赛申报书 / 架构白皮书起草",
+        "场景 D：Mode 3 技术文档与源码逐行核验审计",
+        "docs/knowledge-base/HOME.md",
+        "P0/P1/P2",
+    ]
+    missing_readme = [s for s in readme_sections if s not in readme_text]
+    if missing_readme:
+        fail(f"README.md missing v1.1.0 handoff sections: {missing_readme}")
+
     print("PASS: unified writing-skill structure is valid")
     print("PASS: Mode 1 grounding anchors present")
     print("PASS: Scoped route and Mode 2/3 code-fact red lines present")
+    print("PASS: rules stay project-agnostic; v1.1.0 prompts present")
 
     print(f"PASS: Lite writing load = {lite_writing_size} bytes")
     print(f"PASS: Lite audit load = {lite_audit_size} bytes")
