@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.1.0 — Generic rules, three-skill handoff, and one-click prompts (`writing-skill` v1.1.0)
+
+`SKILL.md` stays an unversioned router. The release version is `v1.1.0` in this file and in `README.md`.
+
+Live rules no longer name a source product. Historical trials stay here: `Lenquest/KariosArc` (Mode 1 on PR #19 at 7/10 and PR #20 at 8/10; scoped limitations on PR #21 at 6/10). Those scores explain why Scoped, the code-fact red lines, and the Mode 1 gates exist. They are not instructions for the next repository.
+
+### Changed
+
+1. **Project-agnostic rules** — `README.md`, `SKILL.md`, and the core rule files no longer treat one repository as the subject of the skill. `Lenquest/KariosArc` and `PR #21` are removed from the introduction and from operating rules. Domain identifiers that remain (`schoolFetch`, “用户系统/画像/简历”, and similar nouns in worked examples) are labeled as illustrative examples or anti-patterns, for example: custom wrapper functions such as `apiClient` / `request` / `schoolFetch`. HOME module names must come from the repository under inspection.
+2. **Three-skill handoff** — `README.md` opens with 团队 AI 协作三件套: `dev-skill` contracts and code → `writing-skill` knowledge base and evidence-governed documents → `drawing-skill` blueprint diagrams.
+3. **One-click prompts** — `README.md` adds 一键复制话术模板 for Cursor / Claude Code / Cloud Agent: Mode 1 whole-repo knowledge base (场景 A), Mode 2 + Scoped boundary memo (场景 B), Mode 2 Standard/Deep formal writing (场景 C), and Mode 3 line-by-line audit (场景 D).
+
+### Migration
+
+Re-runs on a new repository derive module names, request wrappers, and table identifiers from that repository. Do not copy the illustrative names above into an unrelated tree. Existing Mode 1 indexes and Scoped memos are unchanged.
+
+---
+
 ## 1.0.3 — Scoped limitations memos and Mode 2/3 code-fact red lines (`writing-skill`)
 
 Based on the Grok scoped trial on `Lenquest/KariosArc` (PR #21, subsystem / scoped limitations guidance **6/10**). This score is separate from whole-repo Mode 1 (7/10 on PR #19, 8/10 on PR #20). v1.0.1 and v1.0.2 Mode 1 fixes stay in force. This release teaches a teammate who owns one backend module to stop at **Scoped + Mode 2** instead of building `01`–`07`.

@@ -44,15 +44,15 @@ Use when exploring a multi-module codebase to generate a reusable local Investig
 - No passwords, connection strings, test-account secrets, or full JDBC URLs; no template percentages as metrics
 - Do not call a CLI/batch a listening HTTP service without `ListenAndServe`/port bind; empty Controllers (0 handler methods) are **not** APIs
 - Keep Java properties separate from physical columns (without `@TableField`, do not invent snake_case)
-- Scan annotations/entries (`@RestController`/`@RequestMapping`/`go.mod`) repo-wide first, then split by directory ownership into **主产品进程** vs **独立工具/采集进程（如 `tools/**`）**
-- Frontend API extraction must follow local wrapper functions (`schoolFetch(`, `request(`, `apiClient`) in addition to raw `fetch(`/axios; unfollowed wrappers go to `未覆盖`, never “前端无某模块 API”
+- Scan annotations/entries (`@RestController`/`@RequestMapping`/`go.mod`) repo-wide first, then split by directory ownership into **主产品进程** vs **独立工具/采集进程（如 `tools/**`）**. The `tools/**` path is an illustrative tree, not a required layout.
+- Frontend API extraction must follow this repository's own local wrapper functions (e.g., custom wrapper functions such as `apiClient` / `request` / `schoolFetch`) in addition to raw `fetch(`/axios; unfollowed wrappers go to `未覆盖`, never “前端无某模块 API”. Those three names are examples of wrappers, not a required client API.
 - Every static symbol table (Controller, entity, frontend API table) must open with: `本表仅证明符号/映射在源码中存在，不代表方法体分支、鉴权或运行时业务契约已验证`
 
 Execute the 5-stage pipeline (details in the Mode 1 workflow):
 1. **Stage 1 (Explore, <=5 min)**: map 2-level dirs, ownership, modules, configs, docs; line counts from **this run's** `wc`/tools only.
-2. **Stage 2 (Parallel Background Agents)**: coverage declaration (enumerated symbols, files read, unread files; unread paths never in behavior prose). Scan repo-wide then split main product vs `tools/**` processes; follow frontend request wrappers.
-3. **Stage 3 (Sync Core Read)**: read governance entry (`AGENTS.md` / Wiki map) first; apply **inventory invalidation** (missing → new path or Boundary; never `legacy-designs`). Spot-check issue status by **opening named source files** (note no process re-run); if unopened, write `未打开源码核对（仅保留手记原词）`.
-4. **Stage 4 (`7 + 1` Output)**: `HOME.md` + `01`..`07` with symbol-table non-runtime disclaimers, verbatim issue statuses, and HOME modules derived from code/Wiki (never hard-code “用户系统/画像/简历”).
+2. **Stage 2 (Parallel Background Agents)**: coverage declaration (enumerated symbols, files read, unread files; unread paths never in behavior prose). Scan repo-wide then split main product vs independent tool processes (e.g. a `tools/**` tree); follow this repository's frontend request wrappers.
+3. **Stage 3 (Sync Core Read)**: read governance entry (`AGENTS.md` / Wiki map) first; apply **inventory invalidation** (missing → new path or Boundary; never treat a same-name history tree as current, e.g. `legacy-designs`). Spot-check issue status by **opening named source files** (note no process re-run); if unopened, write `未打开源码核对（仅保留手记原词）`.
+4. **Stage 4 (`7 + 1` Output)**: `HOME.md` + `01`..`07` with symbol-table non-runtime disclaimers, verbatim issue statuses, and HOME modules derived from this repository's code or Wiki (never hard-code module names from another project; illustrative anti-pattern only: “用户系统/画像/简历”).
 5. **Stage 5**: before background agents return, place `占位：后台探索尚未回传，以下仅为主会话已核对范围。` under `阶段 5 增补`; on return, delete the placeholder and merge only main-session-verified facts (never paste sub-agent default hosts/secrets, comment-inferred columns, or unverified method behavior).
 
 ### Mode 2 — Evidence-Governed Writing (`project-document-evidence-governance` Writing Mode)

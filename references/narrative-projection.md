@@ -209,11 +209,11 @@ Not every paragraph needs all five parts.
 
 The grammatical subject should normally be the **nearest semantic owner** of the action or claim.
 
-Prefer the method, research object, process, mechanism, actor, or data object that actually performs or carries the meaning:
+Prefer the method, research object, process, mechanism, actor, or data object that actually performs or carries the meaning. The sentences below illustrate subject shape only. Do not copy their nouns into another repository:
 
-- “岗位能力演化分析以活动岗位版本作为移动基线……”
-- “技能标准化过程分为提及识别、节点解析和关系发布……”
-- “个人能力画像保留能力结论与经历证据之间的对应关系……”
+- “版本演化分析以当前生效版本作为移动基线……”
+- “标准化过程分为提及识别、节点解析和关系发布……”
+- “能力记录保留结论与来源证据之间的对应关系……”
 
 Project-wide wrappers such as “本项目”, “本文”, “本研究”, “系统”, “we”, or “the project” are appropriate for:
 

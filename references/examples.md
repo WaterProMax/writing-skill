@@ -2,7 +2,7 @@
 
 ## Use
 
-Use this file only when concrete failure signatures or rewrite patterns help. Diagnose with the core model and decision rules before copying any rewrite.
+Use this file only when concrete failure signatures or rewrite patterns help. Diagnose with the core model and decision rules before copying any rewrite. Table names, module names, and vendor names in the samples illustrate the failure. Do not copy them into an unrelated repository.
 
 ---
 

@@ -2,6 +2,8 @@ version: 1
 purpose: >
   Historical failure cases used to verify that structural consolidation preserves
   the behavior learned in earlier versions without reintroducing append-only rules.
+  Quoted product names, table names, and module names are fixtures from past
+  failures. They are not default modules or required identifiers for every repository.
 
 cases:
   - id: research_engineering_substitution

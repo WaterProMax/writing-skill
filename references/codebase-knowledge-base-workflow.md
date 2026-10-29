@@ -34,9 +34,9 @@ Example: if `API_ROUTE_MATRIX.md` says 404 but a Controller mapping exists, the 
 - Empty Controllers (class-level `@RequestMapping` only, **0** handler methods) are **not** APIs — list them as generator shells if needed.
 - Keep **Java property names** separate from **physical column names**. Without `@TableField` / explicit DDL, do **not** invent snake_case columns; say “物理列名未在注解中声明”.
 - `@Value` / code defaults are **not** the same as YAML placeholder defaults — record both when they differ.
-- Directory ownership: treat third-party trees (e.g. upstream embedding kits), `product-analysis/`-style experiment families, and `full-chain-testing/`-style notes as **evidence / experiment**, not as live product specs or online services, unless running code proves otherwise.
+- Directory ownership: treat third-party trees (e.g. upstream embedding kits), experiment-family directories (e.g. a `product-analysis/`-style tree), and full-chain notes (e.g. a `full-chain-testing/`-style tree) as **evidence / experiment**, not as live product specs or online services, unless running code proves otherwise. Those directory names are illustrative.
 - **Controller 与入口扫描范围先全仓库再按目录所有权拆分**：扫描注解（如 `@RestController` / `@RequestMapping` / `go.mod`）时先扫全仓库，再按目录所有权拆分为「主产品进程」与「独立工具/采集进程（如 `tools/**`）」，既不漏扫工具进程，也不把工具进程的接口混入主产品 API 表。
-- **前端请求字面量提取必须跟进本地包装函数**：提取 API 调用路径时，除了直接搜 `fetch(` / `axios`，必须先识别本地封装函数（如 `schoolFetch(`、`request(`、`apiClient`），对包装函数调用一并提取；未跟进的包装调用只能记入「未覆盖」，严禁写出「前端无某模块 API」的否定结论。
+- **前端请求字面量提取必须跟进本地包装函数**：提取 API 调用路径时，除了直接搜 `fetch(` / `axios`，必须先识别**本仓库自己的**本地封装函数（e.g., custom wrapper functions such as `apiClient` / `request` / `schoolFetch`），对包装函数调用一并提取；未跟进的包装调用只能记入「未覆盖」，严禁写出「前端无某模块 API」的否定结论。`apiClient` / `request` / `schoolFetch` 只是包装函数举例，不是每个仓库都必须存在的客户端。
 - **符号表自带「非运行时行为契约」声明**：每张由注解/静态扫描生成的符号表（Controller 映射表、实体表、前端 API 路径表）表头或首段必须带一句固定提示：「本表仅证明符号/映射在源码中存在，不代表方法体分支、鉴权或运行时业务契约已验证」，防止下游 Mode 2 直接把符号表当成已验证的产品功能写进正式文档。
 
 ---
@@ -93,7 +93,7 @@ Agent 1: 后端与独立工具进程源码结构
 Agent 2: 前端源码结构
   - 先探测栈：有无 vue-router / Pinia / Vuex；无路由表时写「无路由表」，不要发明 routes
   - 组件 props/events/methods（按实际栈书写；可为 reactive() 组合式状态）
-  - 每个 service 的 API 调用：除直接搜 `fetch(` / `axios` 外，必须先识别本地包装函数（如 `schoolFetch(`、`request(`、`apiClient`）并一并提取；未跟进的包装调用只能记入「未覆盖」，严禁写出「前端无某模块 API」的否定结论
+  - 每个 service 的 API 调用：除直接搜 `fetch(` / `axios` 外，必须先识别本仓库自己的本地包装函数（e.g., custom wrapper functions such as `apiClient` / `request` / `schoolFetch`）并一并提取；未跟进的包装调用只能记入「未覆盖」，严禁写出「前端无某模块 API」的否定结论。这些名字只是举例。
   - package.json 依赖分析
 
 Agent 3: AI 服务 + 工具脚本 + SQL
@@ -149,7 +149,7 @@ Agent 4: 数据库 Entity + Mapper + DTO
 
 - **若存在**：按路径读取，并用于合成。
 - **若缺失**：立即查 `AGENTS.md` 与 Wiki repository map（或迁移说明），记录**新路径**或记为 **Boundary（已删除/未提供）**。
-- **禁止**用 `legacy-designs`、归档目录或其他历史树中的**同名文件**充当现行实现或现行提示词。
+- **禁止**用归档目录或其他历史树中的**同名文件**充当现行实现或现行提示词（e.g. a `legacy-designs` archive）。目录名只是举例。
 - 行数、矩阵结论、ISSUE「已修复」等：**必须以本次工具统计与源码抽查为准**；**不得沿用本技能文本里的示例行数或示例状态**（例如不得照抄技能或旧索引里的绝对行数）。
 
 手记与矩阵冲突时，遵守全局 **Conflict priority**；Mode 1 抄录 ISSUE 状态时用**手记原词**（如「已修复 / 已确认 / 已作废」），不要擅自改成技能示例里的二元「已修复/未修复」。
@@ -197,7 +197,7 @@ HOME.md (索引 + 快速导航)
   ├── 按角色导航: 新人/后端/前端/AI/测试/架构（按仓库实际角色裁剪）
   ├── 按模块导航: 从 workspace 视图名与 Controller 前缀归纳；
   │                 模块名必须在代码或 Wiki canonical 页出现
-  │                 （不要写死「用户系统/画像/简历」等示例模块）
+  │                 （不要写死其他项目的模块名；「用户系统/画像/简历」只是反例，不是本技能的默认模块）
   └── 7 个知识库文件（每个独立可读）
 ```
 

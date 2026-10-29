@@ -23,7 +23,13 @@ The script verifies:
 - Scoped route in `SKILL.md` and `writing-workflow.md` (no Mode 1, no `01`–`07`);
 - Mode 2/3 code-fact red lines and 偏差 5 in `code-verification-workflow.md`;
 - §9「子系统局限性备忘录」in `decision-rules.md`;
-- regression input 「为单体仓库中的一个 CLI 模块写申报边界」 and its three failure signatures.
+- regression input 「为单体仓库中的一个 CLI 模块写申报边界」 and its three failure signatures;
+- `v1.1.0` in `README.md` and `## 1.1.0` in `CHANGELOG.md`;
+- no `Lenquest`, `KariosArc`, or `PR #21` in `README.md`, `SKILL.md`, or `references/` (those origins stay in `CHANGELOG.md`);
+- request wrappers labeled as illustrative examples (`apiClient` / `request` / `schoolFetch`);
+- README handoff for 团队 AI 协作三件套 and 场景 A–D one-click prompts.
+
+Quoted product names inside `regression-cases.yaml` are historical fixtures, not default modules for every repository.
 
 ## Behavioral regression cases
 
